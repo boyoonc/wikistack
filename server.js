@@ -1,11 +1,14 @@
 var express = require('express')
 var nunjucks = require('nunjucks')
+var morgan = require('morgan')//logging middleware
 var bodyParser = require('body-parser')
 var path = require('path')
 
 var models = require('./models');
 
-var app = express()
+var app = express() //think of as a pipeline
+
+app.use(morgan('dev'))
 
 app.set('view engine', 'html')
 app.engine('html', nunjucks.render)
