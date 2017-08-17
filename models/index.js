@@ -28,6 +28,9 @@ var Page = db.define('page', {
 	route (){
 		return '/wiki/' + this.urlTitle
 	}
+    // route: function(){
+    //     return '/wiki/' + this.urlTitle   
+    // }
 },
  hooks:{
 	beforeValidate: function (page) {
