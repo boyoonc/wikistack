@@ -7,7 +7,7 @@
     <!-- PLACEHOLDER LIST OF PAGES -->
     <ul>
 	  {% for page in pages %}
-	    <li><a href="#">{{page.title}}</a></li>
+	    <li><a href="{{page.route}}">{{page.title}}</a></li>
 	  {% endfor %}
 	</ul>
   </ul>

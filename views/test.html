@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div>hello</div>
+	<div>{{user.name}}'s pages</div>
+	<!-- <div>{{pages[0].id}} lala</div> -->
+	<!-- <div>{% for page in pages %} {{page.id}}{% endfor %}</div> -->
+	<ul>
+		{% for page in pages %}
+		<li> {{page.title}} </li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+<!-- {{user}} -->

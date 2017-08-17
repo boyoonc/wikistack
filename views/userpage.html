@@ -1,0 +1,36 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+	<h3>{{ user.name }}'s Pages</h3>
+	<hr>
+	<ul class="list-unstyled">
+	    
+	    <!-- {% for page in user.pages %} -->
+	    {% for page in pages %}
+		    <li>
+		        <a href="{{ page.route }}">{{ page.title }}</a>
+		    </li>
+	    {% endfor %}
+	</ul>
+{% endblock %}
+
+<!-- PLACEHOLDER LIST OF PAGES -->
+
+
+  <!-- <h3> {{ page.content}} <small> (<a href="PLACEHOLDER_URL_TITLE/similar">Similar</a>)</small></h3>
+  
+
+  <h4>by <a href="PLACEHOLDER-AUTHOR-URL">{{page.author.name}}</a></h4>
+  {{page}}
+  <div>PLACEHOLDER TAG LIST</div>
+  <hr/>
+  <div>PLACEHOLDER AUTHOR NAME WITH LINK TO AUTHOR PAGE</div>
+
+  <div class="page-body">PLACEHOLDER PAGE CONTENT</div>
+  <hr/>
+  <a href="PLACEHOLDER_URL_TITLE/edit" class="btn btn-primary">edit this page</a>
+  <a href="PLACEHOLDER_URL_TITLE/delete" class="btn btn-danger">delete this page</a>
+
+
+ -->
