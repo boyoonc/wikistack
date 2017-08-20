@@ -19,20 +19,20 @@ router.get('/', function(req, res, next){
 })
 
 router.get('/:userId', function(req, res, next){
-	console.log(req.params.userId)
-	var _user = User.findById(req.params.userId)
+	
+	var _user = User.findById(req.params.userId) //another thing I get from sequelize!
 	// console.log('*****_user', _user)
 	var _pages = Page.findAll(
 		{where:{authorId: req.params.userId }}
 		)
-	console.log('*****_pages', _pages) //why does this return a promise? what?
-	Promise.all([_user, _pages])
+	// console.log('*****_pages', _pages) 
+	Promise.all([_user, _pages]) //enables mutiple queries at once
 		.then(function(userAndPage){
 			// console.log('*****userAndPage', userAndPage)
 			var user = userAndPage[0]
 			var pages = userAndPage[1]
-			console.log('*****user,', user)
-			console.log('*****pages,', pages)
+			// console.log('*****user,', user)
+			// console.log('*****pages,', pages)
 			
 			res.render('test',{
 				user, pages

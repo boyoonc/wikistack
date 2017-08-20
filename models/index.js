@@ -22,6 +22,24 @@ var Page = db.define('page', {
     },
     date: {
     	type: Sequelize.DATE, defaultValue: Sequelize.NOW
+    },
+    tags:{
+        type: Sequelize.ARRAY(Sequelize.TEXT),
+        set(val){ //this is one of two ways to make a setter! getter gets something that exists and makes a virtual, setter manipulates things before they are put in database
+            console.log('got here!')
+            console.log(val)
+            console.log(typeof val)
+            if (typeof val === 'string'){
+                var splitTags = val.split(',').map(function(elem){
+                    return elem.trim()
+                })
+                console.log(splitTags)
+                this.setDataValue('tags', splitTags)
+            } else{
+                console.log(val)
+                this.setDataValue('tags', val)
+            }
+        }
     }
 },
 { getterMethods: {
@@ -43,6 +61,14 @@ var Page = db.define('page', {
 	}
 
 });
+
+Page.findByTag = function(tag){
+    return Page.findAll(//i didn't think to have a return here, im so confused
+        {where: {
+            tags: {$overlap: [tag]}
+        }}
+    ) 
+}
 
 // function generateUrlTitle (page) {
 //   if (page.title) {

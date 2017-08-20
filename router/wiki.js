@@ -1,58 +1,43 @@
 var router = require('express').Router();
-// router.use(require('body-parser').urlencoded( { extended: false } )) //not in given code
 
 var models = require('../models');
 var Page = models.Page; 
 var User = models.User; 
 
 router.get('/', function(req, res, next) {
-  // res.send('got to GET /wiki/');
-  // res.redirect('/')
   Page.findAll({})
-	  .then(function(pages){
-	  	res.render('index', {
-	  		pages
-	  	})
-	  })
-	  .catch(function(err){
-	  	next(err)
-	  })
+    .then(function(pages){
+      res.render('index', {
+        pages
+      })
+    })
+    .catch(function(err){
+      next(err)
+    })
 });
 
 
 
 router.post('/', function(req, res, next) {
-  // res.send('got to POST /wiki/');
-  // res.send(req.body)
-  console.log(req.body)//logs to morgan
-
-  /* getting rid of so we can do find or create to avoid making the same user twice
-  var author = User.build({
-    name: req.body.authorName,
-    email: req.body.authorEmail
-  });
-
-  author.save()
-    .then(function(savedAuthor){
-      console.log(savedAuthor)
-    })
-    .catch(next)
-    */
+  // console.log(req.body)
 
   User.findOrCreate({
     where:{
       email: req.body.authorEmail,
       name: req.body.authorName
-    }//this will access our email and return a promise
+    }
   })
-  // .then(function(){
-    // var user = values[0]
-  // }) //this is resolving into two things: 1. pageThatWasFoundorCreated 2.True - created, False- found in an array
-  .spread(function(user, wasCreatedBool){//spreads out the [] into multiple parameters
+  .spread(function(user, wasCreatedBool){
+    // var splitTags = req.body.tags.split(',').map(function(elem){
+    //   return elem.trim()
+    // }) //I think this works because using .split() returns an array; this worked.
+
     return Page.create({
       title: req.body.title,
       content: req.body.content,
-      status: req.body.status
+      status: req.body.status,
+      // tags: splitTags
+      tags: req.body.tags
 
     })//an alias for build and save
     .then(function(createdPage){
@@ -63,45 +48,40 @@ router.post('/', function(req, res, next) {
     res.redirect(createdPage.route)
   })
   .catch(next)
-
-  /* before users integration
-  var page = Page.build({
-  	title: req.body.title,
-  	content: req.body.content
-  })
-  page.save()
-  	.then(function(savedPage){
-  		// res.json(page)
-  		res.redirect(savedPage.route)
-  	})
-  	.catch(function(err){
-  		next(err)
-  	})
-  // res.redirect('/')
-*/
 });
 
 
 router.get('/add', function(req, res, next) {
-  // res.send('got to GET /wiki/add');
   res.render('addpage')
 });
 
-router.get('/:urlTitle', function(req, res, next){
-	// var urlTitleOfAPage = req.params.urlTitle
-	// res.send('hit dynamic route at ' + urlTitleOfAPage);
+router.get('/search', function(req, res, next){
+  res.render('tagsearch')
+})
 
-	Page.findOne({ 
+router.get('/tagSearch', function(req, res, next){//why :tag????? sooooo confused
+
+  Page.findByTag(req.params.tagSearch)
+    .then(function(pages){
+      res.render('index',{ pages})
+    })
+    .catch(next)
+  // res.render('tagsearch') // why don't I come in here and do findAll where: input tag is in tag array? why class method?
+})
+
+router.get('/:urlTitle', function(req, res, next){
+
+  Page.findOne({ 
     where: { 
       urlTitle: req.params.urlTitle
     },
     include:[
-        {model:User, as:'author'}
-    ]
+        {model:User, as:'author'}//so does this smartly grab the user info of the author, thanks to the belongs to?
+    ] // i think instead of this, can do getAuthor. yep yep
   })
   .then(function(foundPage){
     // res.json(foundPage);
-    console.log('*****foundPage', foundPage)
+    // console.log('*****foundPage', foundPage)
     res.render('wikipage', {
         page: foundPage})
   })
