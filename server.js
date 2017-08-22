@@ -24,6 +24,11 @@ app.get('/', function(req, res, next){
 	res.render('index')
 })
 
+app.get('/tagSearch', function(req, res, next){
+	res.json('HA')
+})
+
+
 // models.User.sync({})
 // .then(function () {
 //     return models.Page.sync({})

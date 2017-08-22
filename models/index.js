@@ -26,17 +26,17 @@ var Page = db.define('page', {
     tags:{
         type: Sequelize.ARRAY(Sequelize.TEXT),
         set(val){ //this is one of two ways to make a setter! getter gets something that exists and makes a virtual, setter manipulates things before they are put in database
-            console.log('got here!')
-            console.log(val)
-            console.log(typeof val)
+            // console.log('got here!')
+            // console.log(val)
+            // console.log(typeof val)
             if (typeof val === 'string'){
                 var splitTags = val.split(',').map(function(elem){
                     return elem.trim()
                 })
-                console.log(splitTags)
+                // console.log(splitTags)
                 this.setDataValue('tags', splitTags)
             } else{
-                console.log(val)
+                // console.log(val)
                 this.setDataValue('tags', val)
             }
         }
@@ -67,7 +67,13 @@ Page.findByTag = function(tag){
         {where: {
             tags: {$overlap: [tag]}
         }}
-    ) 
+    )
+}
+
+Page.prototype.findSimilar = function(){
+    return Page.findAll(
+        {where: {tags:{$overlap: this.tags}, id:{$ne: this.id}}} //instance method so we can use 'this' hm
+        )
 }
 
 // function generateUrlTitle (page) {

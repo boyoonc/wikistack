@@ -55,15 +55,32 @@ router.get('/add', function(req, res, next) {
   res.render('addpage')
 });
 
+router.get('/search/:tag', function(req, res, next){
+  console.log('this works')
+  console.log(req.params.tag)
+  Page.findByTag(req.params.tag)
+    .then(function(pages){
+      res.render('index', {pages})
+    })
+}) //this works according to video
+
 router.get('/search', function(req, res, next){
   res.render('tagsearch')
 })
 
-router.get('/tagSearch', function(req, res, next){//why :tag????? sooooo confused
+router.post('/tagSearch', function(req, res, next){
+  res.json('lalaaaaaa!!')
+})
 
-  Page.findByTag(req.params.tagSearch)
+router.get('/tagSearch', function(req, res, next){//why :tag????? sooooo confused WHY DOESNT THIS WORK//
+  // console.log('this should work now?')
+  // console.log(req.query)//NICE
+  Page.findByTag(req.query.tagSearch)//idk where this becomes a query tho!! before the find by it's nothing no? is it because get with form input, not post?
     .then(function(pages){
-      res.render('index',{ pages})
+      // console.log(req.query.tagSearch)
+      // console.log(pages)
+      // res.json(pages)
+      res.render('index',{ pages })
     })
     .catch(next)
   // res.render('tagsearch') // why don't I come in here and do findAll where: input tag is in tag array? why class method?
@@ -87,6 +104,18 @@ router.get('/:urlTitle', function(req, res, next){
   })
   .catch(next);
 
+})
+
+router.get('/:urlTitle/similar', function(req, res, next){
+  Page.findOne(
+    {where: {urlTitle: req.params.urlTitle}}
+    )
+    .then(function(page){
+      return page.findSimilar()
+    })
+    .then(function(similarPages){
+      res.render('index', {pages: similarPages})
+    })
 })
 
 module.exports = router;
